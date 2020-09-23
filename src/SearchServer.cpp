@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <cassert>
 
 using namespace std;
 
@@ -167,7 +168,6 @@ private:
 
     QueryWord ParseQueryWord(string text) const {
         bool is_minus = false;
-        // Word shouldn't be empty
         if (text[0] == '-') {
             is_minus = true;
             text = text.substr(1);
@@ -199,9 +199,8 @@ private:
         return query;
     }
 
-    // Existence required
     double ComputeWordInverseDocumentFreq(const string& word) const {
-        return log(GetDocumentCount() * 1.0 / word_to_document_freqs_.at(word).size());
+        return log(static_cast<double>(GetDocumentCount()) / word_to_document_freqs_.at(word).size());
     }
 
     template<typename Filter>
@@ -211,56 +210,38 @@ private:
             if (word_to_document_freqs_.count(word) == 0) {
                 continue;
             }
+
             const double inverse_document_freq = ComputeWordInverseDocumentFreq(word);
-            for (const pair<int, double> pair_ : word_to_document_freqs_.at(word)) {									//
-                if (filter(pair_.first, documents_.at(pair_.first).status, documents_.at(pair_.first).rating)) {		//
-                    document_to_relevance[pair_.first] += pair_.second * inverse_document_freq;							//
-                }
-            }
-            /*
-            for (const auto [document_id, term_freq] : word_to_document_freqs_.at(word)) {
+            for (const auto& [document_id, term_freq] : word_to_document_freqs_.at(word)) {
                 if (filter(document_id, documents_.at(document_id).status, documents_.at(document_id).rating)) {
                     document_to_relevance[document_id] += term_freq * inverse_document_freq;
                 }
             }
-             */
         }
 
         for (const string& word : query.minus_words) {
             if (word_to_document_freqs_.count(word) == 0) {
                 continue;
             }
-            for (const pair<int, double> pair_ : word_to_document_freqs_.at(word)) {									//
-                document_to_relevance.erase(pair_.first);																//
-            }
-            /*
-            for (const auto [document_id, _] : word_to_document_freqs_.at(word)) {
+
+            for (const auto& [document_id, _] : word_to_document_freqs_.at(word)) {
                 document_to_relevance.erase(document_id);
             }
-             */
         }
 
         vector<Document> matched_documents;
-        for (const pair<int, double> pair_: document_to_relevance) {													//
-            matched_documents.push_back({
-                pair_.first,																							//
-                pair_.second,																							//
-                documents_.at(pair_.first).rating																		//
-            });
-        }
-        /*
-        for (const auto [document_id, relevance] : document_to_relevance) {
+        for (const auto& [document_id, relevance] : document_to_relevance) {
             matched_documents.push_back({
                 document_id,
                 relevance,
                 documents_.at(document_id).rating
             });
         }
-         */
+
         return matched_documents;
-        /////////////////////////////
     }
 };
+
 
 void PrintDocument(const Document& document) {
     cout << "{ "s
@@ -271,6 +252,7 @@ void PrintDocument(const Document& document) {
 }
 
 int main() {
+
     SearchServer search_server;
     search_server.SetStopWords("и в на"s);
 

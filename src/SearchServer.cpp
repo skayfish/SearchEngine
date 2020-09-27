@@ -11,7 +11,7 @@
 using namespace std;
 
 
-const int MAX_RESULT_DOCUMENT_COUNT = 5;
+constexpr int MAX_RESULT_DOCUMENT_COUNT = 5;
 
 string ReadLine() {
     string s;
@@ -251,9 +251,9 @@ ostream& operator<<(ostream& os, const vector<T>& arr) {
         if (isFirst){
             os << elem;
             isFirst = false;
-        }
-        else
+        } else {
             os << ", "s << elem;
+        }
     }
     os << "]"s;
     return os;
@@ -267,9 +267,9 @@ ostream& operator<<(ostream& os, const set<T>& arr) {
         if (isFirst){
             os << elem;
             isFirst = false;
-        }
-        else
+        } else {
             os << ", "s << elem;
+        }
     }
     os << "}"s;
 
@@ -284,9 +284,9 @@ ostream& operator<<(ostream& os, const map<K, V>& arr) {
         if (isFirst){
             os << key << ": "s << value;
             isFirst = false;
-        }
-        else
+        } else {
             os << ", "s << key << ": "s << value;
+        }
     }
     os << "}"s;
 
@@ -340,7 +340,7 @@ void RunTestImpl(F func, const string& func_str) {
 
 
 void TestExcludeStopWordsFromAddedDocumentContent() {
-    const int doc_id = 42;
+    constexpr int doc_id = 42;
     const string content = "cat in the city"s;
     const vector<int> ratings = {1, 2, 3};
     {
@@ -361,7 +361,7 @@ void TestExcludeStopWordsFromAddedDocumentContent() {
 }
 
 void TestFindAddedDocument() {
-    const int doc_id = 1;
+    constexpr int doc_id = 1;
     const string content = "cat in the city"s;
     const vector<int> ratings = {1, 2, 3};
 
@@ -394,7 +394,7 @@ void TestFindAddedDocument() {
 }
 
 void TestMinusWords() {
-    const int doc_id = 1;
+    constexpr int doc_id = 1;
     const string content = "cat in the city"s;
     const vector<int> ratings = {1, 2, 3};
 
@@ -437,7 +437,7 @@ void TestComputeAverageRating() {
 }
 
 void TestFindWithPredicat() {
-    const int doc_id = 1;
+    constexpr int doc_id = 1;
     const string content = "cat in the city"s;
     const vector<int> ratings = {1, 2, 3};
 
@@ -502,7 +502,7 @@ void TestFindWithPredicat() {
 }
 
 void TestFindDocumentsByStatus() {
-    const int doc_id = 1;
+    constexpr int doc_id = 1;
     const string content = "cat in the city"s;
     const vector<int> ratings = {1, 2, 3};
 

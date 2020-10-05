@@ -122,13 +122,13 @@ public:
         auto matched_documents = FindAllDocuments(query, filter);
 
         sort(matched_documents.begin(), matched_documents.end(),
-			[](const Document& lhs, const Document& rhs) {
-        		if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
-        			return lhs.rating > rhs.rating;
-        		} else {
-        			return lhs.relevance > rhs.relevance;
+        		[](const Document& lhs, const Document& rhs) {
+        			if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
+        				return lhs.rating > rhs.rating;
+        			} else {
+        				return lhs.relevance > rhs.relevance;
+        			}
         		}
-        	}
         );
         if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
             matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
@@ -141,12 +141,12 @@ public:
         return documents_.size();
     }
 
-    int GetDocumentId(int index) const {
-    	if (index >= 0 && index < GetDocumentCount()) {
-    		return document_ids_[index];
-    	}
-    	throw out_of_range("GetDocumentId: index out of range"s);
-    }
+	int GetDocumentId(int index) const {
+		if (index >= 0 && index < GetDocumentCount()) {
+			return document_ids_[index];
+		}
+		throw out_of_range("GetDocumentId: index out of range"s);
+	}
 
     tuple<vector<string>, DocumentStatus> MatchDocument(const string& raw_query, int document_id) const {
         const Query query = ParseQuery(raw_query);
@@ -440,14 +440,14 @@ void TestFindAddedDocument() {
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("dog"s);
+        const auto found_docs = server.FindTopDocuments("dog"s);
         ASSERT(found_docs.empty());
     }
 
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("cat in the city"s);
+        const auto found_docs = server.FindTopDocuments("cat in the city"s);
         ASSERT_EQUAL(found_docs.size(), 1u);
         const Document& doc0 = found_docs[0];
         ASSERT_EQUAL(doc0.id, doc_id);
@@ -472,28 +472,28 @@ void TestMinusWords() {
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("-cat"s);
+        const auto found_docs = server.FindTopDocuments("-cat"s);
         ASSERT(found_docs.empty() == true);
     }
 
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("-cat in"s);
+        const auto found_docs = server.FindTopDocuments("-cat in"s);
         ASSERT(found_docs.empty() == true);
     }
 
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("cat -cat"s);
+        const auto found_docs = server.FindTopDocuments("cat -cat"s);
         ASSERT(found_docs.empty() == true);
     }
 
     {
         SearchServer server;
         server.AddDocument(doc_id, content, DocumentStatus::ACTUAL, ratings);
-        const auto& found_docs = server.FindTopDocuments("-dog cat"s);
+        const auto found_docs = server.FindTopDocuments("-dog cat"s);
         ASSERT_EQUAL(found_docs.size(), 1u);
         ASSERT_EQUAL(found_docs[0].id, doc_id);
     }
@@ -595,7 +595,7 @@ void TestFindDocumentsByStatus() {
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::IRRELEVANT).empty() == true);
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::REMOVED).empty() == true);
 
-        const auto& found_docs =  server.FindTopDocuments("cat", DocumentStatus::ACTUAL);
+        const auto found_docs =  server.FindTopDocuments("cat", DocumentStatus::ACTUAL);
         ASSERT_EQUAL(static_cast<int>(get<DocumentStatus>(server.MatchDocument("cat",doc_id))), static_cast<int>(DocumentStatus::ACTUAL));
         ASSERT_EQUAL(found_docs.size(), 1u);
         ASSERT_EQUAL(found_docs[0].id, doc_id);
@@ -610,7 +610,7 @@ void TestFindDocumentsByStatus() {
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::IRRELEVANT).empty() == true);
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::REMOVED).empty() == true);
 
-        const auto& found_docs =  server.FindTopDocuments("cat", DocumentStatus::BANNED);
+        const auto found_docs =  server.FindTopDocuments("cat", DocumentStatus::BANNED);
         ASSERT_EQUAL(static_cast<int>(get<DocumentStatus>(server.MatchDocument("cat",doc_id))), static_cast<int>(DocumentStatus::BANNED));
         ASSERT_EQUAL(found_docs.size(), 1u);
         ASSERT_EQUAL(found_docs[0].id, doc_id);
@@ -625,7 +625,7 @@ void TestFindDocumentsByStatus() {
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::ACTUAL).empty() == true);
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::REMOVED).empty() == true);
 
-        const auto& found_docs =  server.FindTopDocuments("cat", DocumentStatus::IRRELEVANT);
+        const auto found_docs =  server.FindTopDocuments("cat", DocumentStatus::IRRELEVANT);
         ASSERT_EQUAL(static_cast<int>(get<DocumentStatus>(server.MatchDocument("cat",doc_id))), static_cast<int>(DocumentStatus::IRRELEVANT));
         ASSERT_EQUAL(found_docs.size(), 1u);
         ASSERT_EQUAL(found_docs[0].id, doc_id);
@@ -640,7 +640,7 @@ void TestFindDocumentsByStatus() {
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::IRRELEVANT).empty() == true);
         ASSERT(server.FindTopDocuments("cat", DocumentStatus::ACTUAL).empty() == true);
 
-        const auto& found_docs =  server.FindTopDocuments("cat", DocumentStatus::REMOVED);
+        const auto found_docs =  server.FindTopDocuments("cat", DocumentStatus::REMOVED);
         ASSERT_EQUAL(static_cast<int>(get<DocumentStatus>(server.MatchDocument("cat",doc_id))), static_cast<int>(DocumentStatus::REMOVED));
         ASSERT_EQUAL(found_docs.size(), 1u);
         ASSERT_EQUAL(found_docs[0].id, doc_id);
@@ -818,4 +818,5 @@ int main() {
     MatchDocuments(search_server, "модный --пёс"s);
     MatchDocuments(search_server, "пушистый - хвост"s);
 
+    return 0;
 }

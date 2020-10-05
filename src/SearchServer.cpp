@@ -100,7 +100,7 @@ public:
     	if (documents_.count(document_id) > 0) {
     		throw invalid_argument("A document with this ID already exists"s);
     	}
-    	const vector<string>& words = SplitIntoWordsNoStop(document);
+    	const vector<string> words = SplitIntoWordsNoStop(document);
 
     	const double inv_word_count = 1.0 / words.size();
     	for (const string& word : words) {
@@ -122,13 +122,13 @@ public:
         auto matched_documents = FindAllDocuments(query, filter);
 
         sort(matched_documents.begin(), matched_documents.end(),
-        		[](const Document& lhs, const Document& rhs) {
-        			if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
-        				return lhs.rating > rhs.rating;
-        			} else {
-        				return lhs.relevance > rhs.relevance;
-        			}
+			[](const Document& lhs, const Document& rhs) {
+        		if (abs(lhs.relevance - rhs.relevance) < 1e-6) {
+        			return lhs.rating > rhs.rating;
+        		} else {
+        			return lhs.relevance > rhs.relevance;
         		}
+        	}
         );
         if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
             matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
@@ -146,10 +146,10 @@ public:
     		return document_ids_[index];
     	}
     	throw out_of_range("GetDocumentId: index out of range"s);
-	}
+    }
 
     tuple<vector<string>, DocumentStatus> MatchDocument(const string& raw_query, int document_id) const {
-        const Query& query = ParseQuery(raw_query);
+        const Query query = ParseQuery(raw_query);
         vector<string> matched_words;
         for (const string& word : query.plus_words) {
             if (word_to_document_freqs_.count(word) == 0) {
@@ -177,7 +177,7 @@ private:
         DocumentStatus status;
     };
 
-    const set<string> stop_words_;
+    set<string> stop_words_;
     map<string, map<int, double>> word_to_document_freqs_;
     map<int, DocumentData> documents_;
     vector<int> document_ids_;
@@ -818,5 +818,4 @@ int main() {
     MatchDocuments(search_server, "модный --пёс"s);
     MatchDocuments(search_server, "пушистый - хвост"s);
 
-    return 0;
 }

@@ -1,4 +1,8 @@
 /Debug/
-.*
+/.*
 !.gitignore
 /.settings/
+/x64/
+/.vs/
+!.cpp
+!.h

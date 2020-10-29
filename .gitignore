@@ -4,5 +4,6 @@
 /.settings/
 /x64/
 /.vs/
-!.cpp
-!.h
+/*.json
+/*.vcxproj.*
+/*.sln

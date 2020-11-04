@@ -8,6 +8,7 @@
 #include "search_server.h"
 #include "paginator.h"
 #include "request_queue.h"
+#include "log_duration.h"
 
 using namespace std;
 
@@ -506,20 +507,42 @@ int main() {
     setlocale(0, "russian");
     SearchServer search_server("и в на"s);
 
+
     AddDocument(search_server, 1, "пушистый кот пушистый хвост"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
     AddDocument(search_server, 1, "пушистый пёс и модный ошейник"s, DocumentStatus::ACTUAL, { 1, 2 });
     AddDocument(search_server, -1, "пушистый пёс и модный ошейник"s, DocumentStatus::ACTUAL, { 1, 2 });
     AddDocument(search_server, 3, "большой пёс скво\x12рец евгений"s, DocumentStatus::ACTUAL, { 1, 3, 2 });
     AddDocument(search_server, 4, "большой пёс скворец евгений"s, DocumentStatus::ACTUAL, { 1, 1, 1 });
 
-    FindTopDocuments(search_server, "пушистый -пёс"s);
-    FindTopDocuments(search_server, "пушистый --кот"s);
-    FindTopDocuments(search_server, "пушистый -"s);
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        FindTopDocuments(search_server, "пушистый -пёс"s);
+    }
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        FindTopDocuments(search_server, "пушистый --кот"s);
+    }
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        FindTopDocuments(search_server, "пушистый -"s);
+    }
 
-    MatchDocuments(search_server, "пушистый пёс"s);
-    MatchDocuments(search_server, "модный -кот"s);
-    MatchDocuments(search_server, "модный --пёс"s);
-    MatchDocuments(search_server, "пушистый - хвост"s);
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        MatchDocuments(search_server, "пушистый пёс"s);
+    }
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        MatchDocuments(search_server, "модный -кот"s);
+    }
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        MatchDocuments(search_server, "модный --пёс"s);
+    }
+    {
+        LOG_DURAION_STREAM("Operation time"s, cout);
+        MatchDocuments(search_server, "пушистый - хвост"s);
+    }
 
     system("pause");
     return 0;

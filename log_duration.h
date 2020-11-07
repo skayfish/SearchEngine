@@ -8,7 +8,7 @@
 #define UNIQUE_VAR_NAME_PROFILE PROFILE_CONCAT(profileGuard, __LINE__)
 #define LOG_DURATION(x) LogDuration UNIQUE_VAR_NAME_PROFILE(x)
 
-#define LOG_DURAION_STREAM(x, y) LogDuration guard(x, y)
+#define LOG_DURATION_STREAM(x, y) LogDuration guard(x, y)
 
 class LogDuration {
 public:
@@ -25,7 +25,7 @@ public:
 
     LogDuration(std::string name_operation, std::ostream& os) 
         : name_operation_(name_operation)
-        , os_(os){
+        , os_(os) {
 
     }
 
@@ -35,7 +35,7 @@ public:
 
         const auto end_time = Clock::now();
         const auto dur = end_time - start_time_;
-        std::cerr << name_operation_ << ": "s << duration_cast<milliseconds>(dur).count() << " ms"s << std::endl;
+        os_ << name_operation_ << ": "s << duration_cast<milliseconds>(dur).count() << " ms"s << std::endl;
     }
 
 private:

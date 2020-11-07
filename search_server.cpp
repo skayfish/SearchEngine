@@ -16,13 +16,22 @@ void SearchServer::AddDocument(int document_id, const string& document, Document
         throw invalid_argument("A document with this ID already exists"s);
     }
 
+    map<string, double> word_freqs_of_new_document;
     const vector<string> words = SplitIntoWordsNoStop(document);
     const double inv_word_count = 1.0 / words.size();
     for (const string& word : words) {
-        word_to_document_freqs_[word][document_id] += inv_word_count;
+        //word_to_document_freqs_[word][document_id] += inv_word_count;
+        word_freqs_of_new_document[word] += inv_word_count;
     }
 
-    documents_.emplace(document_id, DocumentData{ ComputeAverageRating(ratings), status });
+    documents_.emplace(
+        document_id,
+        DocumentData{ 
+            ComputeAverageRating(ratings), 
+            status,
+            word_freqs_of_new_document
+        }
+    );
     document_ids_.push_back(document_id);
 }
 
@@ -56,23 +65,42 @@ int SearchServer::GetDocumentId(int index) const {
     throw out_of_range("GetDocumentId: index out of range"s);
 }
 
+vector<int>::const_iterator SearchServer::begin() const {
+    return document_ids_.begin();
+}
+
+vector<int>::const_iterator SearchServer::end() const {
+    return document_ids_.end();
+}
+
 tuple<vector<string>, DocumentStatus> SearchServer::MatchDocument(const string& raw_query, int document_id) const {
     const Query query = ParseQuery(raw_query);
     vector<string> matched_words;
+
+    
     for (const string& word : query.plus_words) {
-        if (word_to_document_freqs_.count(word) == 0) {
+        /*if (word_to_document_freqs_.count(word) == 0) {
             continue;
         }
         if (word_to_document_freqs_.at(word).count(document_id)) {
+            matched_words.push_back(word);
+        }*/
+
+        if (documents_.count(document_id) && documents_.at(document_id).word_freqs.count(word)) {
             matched_words.push_back(word);
         }
     }
 
     for (const string& word : query.minus_words) {
-        if (word_to_document_freqs_.count(word) == 0) {
+        /*if (word_to_document_freqs_.count(word) == 0) {
             continue;
         }
         if (word_to_document_freqs_.at(word).count(document_id)) {
+            matched_words.clear();
+            break;
+        }*/
+
+        if (documents_.count(document_id) && documents_.at(document_id).word_freqs.count(word)) {
             matched_words.clear();
             break;
         }
@@ -82,6 +110,25 @@ tuple<vector<string>, DocumentStatus> SearchServer::MatchDocument(const string& 
         matched_words, 
         documents_.at(document_id).status 
     };
+}
+
+const map<string, double>& SearchServer::GetWordToFrequencies(int document_id) const {
+    static const map<string, double> empty_result = map<string, double>();
+    if (!documents_.count(document_id)) {
+        return empty_result;
+    }
+
+    return documents_.at(document_id).word_freqs;
+}
+
+void SearchServer::RemoveDocument(int document_id) {
+    documents_.erase(document_id);
+    for (size_t i = 0; i < document_ids_.size(); i++) {
+        if (document_ids_[i] == document_id) {
+            document_ids_.erase(document_ids_.begin() + i);
+            break;
+        }
+    }
 }
 
 bool SearchServer::IsStopWord(const string& word) const {
@@ -167,6 +214,17 @@ SearchServer::Query SearchServer::ParseQuery(const string& text) const {
     return result;
 }
 
+int SearchServer::CountDocumentsContainWord(const string& word) const {
+    int sum = 0;
+    for (const auto& [_, data] : documents_) {
+        if (data.word_freqs.count(word)) {
+            ++sum;
+        }
+    }
+
+    return sum;
+}
+
 double SearchServer::ComputeWordInverseDocumentFreq(const string& word) const {
-    return log(static_cast<double>(GetDocumentCount()) / word_to_document_freqs_.at(word).size());
+    return log(static_cast<double>(GetDocumentCount()) / CountDocumentsContainWord(word));
 }

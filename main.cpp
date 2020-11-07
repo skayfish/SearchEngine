@@ -9,6 +9,7 @@
 #include "paginator.h"
 #include "request_queue.h"
 #include "log_duration.h"
+#include "remove_duplicates.h"
 
 using namespace std;
 
@@ -504,46 +505,36 @@ void MatchDocuments(const SearchServer& search_server, const string& query) {
 }
 
 int main() {
-    setlocale(0, "russian");
-    SearchServer search_server("и в на"s);
+    TestSearchServer();
+    SearchServer search_server("and with"s);
 
+    AddDocument(search_server, 1, "funny pet and nasty rat"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
+    AddDocument(search_server, 2, "funny pet with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    AddDocument(search_server, 1, "пушистый кот пушистый хвост"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
-    AddDocument(search_server, 1, "пушистый пёс и модный ошейник"s, DocumentStatus::ACTUAL, { 1, 2 });
-    AddDocument(search_server, -1, "пушистый пёс и модный ошейник"s, DocumentStatus::ACTUAL, { 1, 2 });
-    AddDocument(search_server, 3, "большой пёс скво\x12рец евгений"s, DocumentStatus::ACTUAL, { 1, 3, 2 });
-    AddDocument(search_server, 4, "большой пёс скворец евгений"s, DocumentStatus::ACTUAL, { 1, 1, 1 });
+    // дубликат документа 2, будет удалён
+    AddDocument(search_server, 3, "funny pet with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        FindTopDocuments(search_server, "пушистый -пёс"s);
-    }
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        FindTopDocuments(search_server, "пушистый --кот"s);
-    }
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        FindTopDocuments(search_server, "пушистый -"s);
-    }
+    // отличие только в стоп-словах, считаем дубликатом
+    AddDocument(search_server, 4, "funny pet and curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        MatchDocuments(search_server, "пушистый пёс"s);
-    }
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        MatchDocuments(search_server, "модный -кот"s);
-    }
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        MatchDocuments(search_server, "модный --пёс"s);
-    }
-    {
-        LOG_DURAION_STREAM("Operation time"s, cout);
-        MatchDocuments(search_server, "пушистый - хвост"s);
-    }
+    // множество слов такое же, считаем дубликатом документа 1
+    AddDocument(search_server, 5, "funny funny pet and nasty nasty rat"s, DocumentStatus::ACTUAL, { 1, 2 });
+
+    // добавились новые слова, дубликатом не является
+    AddDocument(search_server, 6, "funny pet and not very nasty rat"s, DocumentStatus::ACTUAL, { 1, 2 });
+
+    // множество слов такое же, как в id 6, несмотря на другой порядок, считаем дубликатом
+    AddDocument(search_server, 7, "very nasty rat and not very funny pet"s, DocumentStatus::ACTUAL, { 1, 2 });
+
+    // есть не все слова, не является дубликатом
+    AddDocument(search_server, 8, "pet with rat and rat and rat"s, DocumentStatus::ACTUAL, { 1, 2 });
+
+    // слова из разных документов, не является дубликатом
+    AddDocument(search_server, 9, "nasty rat with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
+
+    cout << "Before duplicates removed: "s << search_server.GetDocumentCount() << endl;
+    RemoveDuplicates(search_server);
+    cout << "After duplicates removed: "s << search_server.GetDocumentCount() << endl;
 
     system("pause");
-    return 0;
 }

@@ -59,16 +59,21 @@ public:
 
     int GetDocumentCount() const;
     int GetDocumentId(int index) const;
+    std::vector<int>::const_iterator begin() const;
+    std::vector<int>::const_iterator end() const ;
     std::tuple<std::vector<std::string>, DocumentStatus> MatchDocument(const std::string& raw_query, int document_id) const;
+    const std::map<std::string, double>& GetWordToFrequencies(int document_id) const;
+    void RemoveDocument(int document_id);
 
 private:
     struct DocumentData {
         int rating;
         DocumentStatus status;
+        std::map<std::string, double>word_freqs;
     };
 
     std::set<std::string> stop_words_;
-    std::map<std::string, std::map<int, double>> word_to_document_freqs_;
+    //std::map<std::string, std::map<int, double>> word_to_document_freqs_;/////
     std::map<int, DocumentData> documents_;
     std::vector<int> document_ids_;
 
@@ -91,12 +96,24 @@ private:
     };
 
     Query ParseQuery(const std::string& text) const;
+    int CountDocumentsContainWord(const std::string& word)const;
     double ComputeWordInverseDocumentFreq(const std::string& word) const;
 
     template<typename Filter>
     std::vector<Document> FindAllDocuments(const Query& query, Filter filter) const {
         std::map<int, double> document_to_relevance;
         for (const std::string& word : query.plus_words) {
+            if (CountDocumentsContainWord(word) == 0) {
+                continue;
+            }
+            const double inverse_document_freq = ComputeWordInverseDocumentFreq(word);
+            for (const auto& [id, data] : documents_) {
+                if (filter(id, data.status, data.rating) && data.word_freqs.count(word)) {
+                    document_to_relevance[id] += data.word_freqs.at(word) * inverse_document_freq;
+                }
+            }
+        }
+        /*for (const std::string& word : query.plus_words) {
             if (word_to_document_freqs_.count(word) == 0) {
                 continue;
             }
@@ -108,9 +125,20 @@ private:
                     document_to_relevance[document_id] += term_freq * inverse_document_freq;
                 }
             }
-        }
+        }*/
 
         for (const std::string& word : query.minus_words) {
+            if (CountDocumentsContainWord(word) == 0) {
+                continue;
+            }
+
+            for (const auto& [id, data] : documents_) {
+                if (data.word_freqs.count(word)) {
+                    document_to_relevance.erase(id);
+                }
+            }
+        }
+        /*for (const std::string& word : query.minus_words) {
             if (word_to_document_freqs_.count(word) == 0) {
                 continue;
             }
@@ -118,7 +146,8 @@ private:
             for (const auto& [document_id, _] : word_to_document_freqs_.at(word)) {
                 document_to_relevance.erase(document_id);
             }
-        }
+        }*/
+
 
         std::vector<Document> matched_documents;
         for (const auto& [document_id, relevance] : document_to_relevance) {

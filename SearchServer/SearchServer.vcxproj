@@ -30,7 +30,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -143,6 +143,7 @@
     <ClCompile Include="..\document.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\read_input_functions.cpp" />
+    <ClCompile Include="..\remove_duplicates.cpp" />
     <ClCompile Include="..\request_queue.cpp" />
     <ClCompile Include="..\search_server.cpp" />
     <ClCompile Include="..\string_processing.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="..\log_duration.h" />
     <ClInclude Include="..\paginator.h" />
     <ClInclude Include="..\read_input_functions.h" />
+    <ClInclude Include="..\remove_duplicates.h" />
     <ClInclude Include="..\request_queue.h" />
     <ClInclude Include="..\search_server.h" />
     <ClInclude Include="..\string_processing.h" />

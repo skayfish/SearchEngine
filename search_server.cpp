@@ -20,7 +20,6 @@ void SearchServer::AddDocument(int document_id, const string& document, Document
     const vector<string> words = SplitIntoWordsNoStop(document);
     const double inv_word_count = 1.0 / words.size();
     for (const string& word : words) {
-        //word_to_document_freqs_[word][document_id] += inv_word_count;
         word_freqs_of_new_document[word] += inv_word_count;
     }
 
@@ -79,27 +78,12 @@ tuple<vector<string>, DocumentStatus> SearchServer::MatchDocument(const string& 
 
     
     for (const string& word : query.plus_words) {
-        /*if (word_to_document_freqs_.count(word) == 0) {
-            continue;
-        }
-        if (word_to_document_freqs_.at(word).count(document_id)) {
-            matched_words.push_back(word);
-        }*/
-
         if (documents_.count(document_id) && documents_.at(document_id).word_freqs.count(word)) {
             matched_words.push_back(word);
         }
     }
 
     for (const string& word : query.minus_words) {
-        /*if (word_to_document_freqs_.count(word) == 0) {
-            continue;
-        }
-        if (word_to_document_freqs_.at(word).count(document_id)) {
-            matched_words.clear();
-            break;
-        }*/
-
         if (documents_.count(document_id) && documents_.at(document_id).word_freqs.count(word)) {
             matched_words.clear();
             break;

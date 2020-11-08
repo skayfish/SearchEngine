@@ -73,7 +73,6 @@ private:
     };
 
     std::set<std::string> stop_words_;
-    //std::map<std::string, std::map<int, double>> word_to_document_freqs_;/////
     std::map<int, DocumentData> documents_;
     std::vector<int> document_ids_;
 
@@ -113,19 +112,6 @@ private:
                 }
             }
         }
-        /*for (const std::string& word : query.plus_words) {
-            if (word_to_document_freqs_.count(word) == 0) {
-                continue;
-            }
-
-            const double inverse_document_freq = ComputeWordInverseDocumentFreq(word);
-            for (const auto& [document_id, term_freq] : word_to_document_freqs_.at(word)) {
-                const auto& document_data = documents_.at(document_id);
-                if (filter(document_id, document_data.status, document_data.rating)) {
-                    document_to_relevance[document_id] += term_freq * inverse_document_freq;
-                }
-            }
-        }*/
 
         for (const std::string& word : query.minus_words) {
             if (CountDocumentsContainWord(word) == 0) {
@@ -138,16 +124,6 @@ private:
                 }
             }
         }
-        /*for (const std::string& word : query.minus_words) {
-            if (word_to_document_freqs_.count(word) == 0) {
-                continue;
-            }
-
-            for (const auto& [document_id, _] : word_to_document_freqs_.at(word)) {
-                document_to_relevance.erase(document_id);
-            }
-        }*/
-
 
         std::vector<Document> matched_documents;
         for (const auto& [document_id, relevance] : document_to_relevance) {

@@ -473,25 +473,25 @@ void AddDocument(SearchServer& search_server, int document_id, const string& doc
         search_server.AddDocument(document_id, document, status, ratings);
     }
     catch (const exception& e) {
-        cout << "Îøèáêà äîáàâëåíèÿ äîêóìåíòà "s << document_id << ": "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð° "s << document_id << ": "s << e.what() << endl;
     }
 }
 
 void FindTopDocuments(const SearchServer& search_server, const string& raw_query) {
-    cout << "Ðåçóëüòàòû ïîèñêà ïî çàïðîñó: "s << raw_query << endl;
+    cout << "Ð ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ñ‹ Ð¿Ð¾Ð¸ÑÐºÐ° Ð¿Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ: "s << raw_query << endl;
     try {
         for (const Document& document : search_server.FindTopDocuments(raw_query)) {
             PrintDocument(document);
         }
     }
     catch (const exception& e) {
-        cout << "Îøèáêà ïîèñêà: "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð¸ÑÐºÐ°: "s << e.what() << endl;
     }
 }
 
 void MatchDocuments(const SearchServer& search_server, const string& query) {
     try {
-        cout << "Ìàò÷èíã äîêóìåíòîâ ïî çàïðîñó: "s << query << endl;
+        cout << "ÐœÐ°Ñ‚Ñ‡Ð¸Ð½Ð³ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð¿Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ: "s << query << endl;
         const int document_count = search_server.GetDocumentCount();
         for (int index = 0; index < document_count; ++index) {
             const int document_id = search_server.GetDocumentId(index);
@@ -500,7 +500,7 @@ void MatchDocuments(const SearchServer& search_server, const string& query) {
         }
     }
     catch (const exception& e) {
-        cout << "Îøèáêà ìàò÷èíãà äîêóìåíòîâ íà çàïðîñ "s << query << ": "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¼Ð°Ñ‚Ñ‡Ð¸Ð½Ð³Ð° Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð½Ð° Ð·Ð°Ð¿Ñ€Ð¾Ñ "s << query << ": "s << e.what() << endl;
     }
 }
 
@@ -511,25 +511,25 @@ int main() {
     AddDocument(search_server, 1, "funny pet and nasty rat"s, DocumentStatus::ACTUAL, { 7, 2, 7 });
     AddDocument(search_server, 2, "funny pet with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // äóáëèêàò äîêóìåíòà 2, áóäåò óäàë¸í
+    // Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð° 2, Ð±ÑƒÐ´ÐµÑ‚ ÑƒÐ´Ð°Ð»Ñ‘Ð½
     AddDocument(search_server, 3, "funny pet with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // îòëè÷èå òîëüêî â ñòîï-ñëîâàõ, ñ÷èòàåì äóáëèêàòîì
+    // Ð¾Ñ‚Ð»Ð¸Ñ‡Ð¸Ðµ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð² ÑÑ‚Ð¾Ð¿-ÑÐ»Ð¾Ð²Ð°Ñ…, ÑÑ‡Ð¸Ñ‚Ð°ÐµÐ¼ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼
     AddDocument(search_server, 4, "funny pet and curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // ìíîæåñòâî ñëîâ òàêîå æå, ñ÷èòàåì äóáëèêàòîì äîêóìåíòà 1
+    // Ð¼Ð½Ð¾Ð¶ÐµÑÑ‚Ð²Ð¾ ÑÐ»Ð¾Ð² Ñ‚Ð°ÐºÐ¾Ðµ Ð¶Ðµ, ÑÑ‡Ð¸Ñ‚Ð°ÐµÐ¼ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð° 1
     AddDocument(search_server, 5, "funny funny pet and nasty nasty rat"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // äîáàâèëèñü íîâûå ñëîâà, äóáëèêàòîì íå ÿâëÿåòñÿ
+    // Ð´Ð¾Ð±Ð°Ð²Ð¸Ð»Ð¸ÑÑŒ Ð½Ð¾Ð²Ñ‹Ðµ ÑÐ»Ð¾Ð²Ð°, Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼ Ð½Ðµ ÑÐ²Ð»ÑÐµÑ‚ÑÑ
     AddDocument(search_server, 6, "funny pet and not very nasty rat"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // ìíîæåñòâî ñëîâ òàêîå æå, êàê â id 6, íåñìîòðÿ íà äðóãîé ïîðÿäîê, ñ÷èòàåì äóáëèêàòîì
+    // Ð¼Ð½Ð¾Ð¶ÐµÑÑ‚Ð²Ð¾ ÑÐ»Ð¾Ð² Ñ‚Ð°ÐºÐ¾Ðµ Ð¶Ðµ, ÐºÐ°Ðº Ð² id 6, Ð½ÐµÑÐ¼Ð¾Ñ‚Ñ€Ñ Ð½Ð° Ð´Ñ€ÑƒÐ³Ð¾Ð¹ Ð¿Ð¾Ñ€ÑÐ´Ð¾Ðº, ÑÑ‡Ð¸Ñ‚Ð°ÐµÐ¼ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼
     AddDocument(search_server, 7, "very nasty rat and not very funny pet"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // åñòü íå âñå ñëîâà, íå ÿâëÿåòñÿ äóáëèêàòîì
+    // ÐµÑÑ‚ÑŒ Ð½Ðµ Ð²ÑÐµ ÑÐ»Ð¾Ð²Ð°, Ð½Ðµ ÑÐ²Ð»ÑÐµÑ‚ÑÑ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼
     AddDocument(search_server, 8, "pet with rat and rat and rat"s, DocumentStatus::ACTUAL, { 1, 2 });
 
-    // ñëîâà èç ðàçíûõ äîêóìåíòîâ, íå ÿâëÿåòñÿ äóáëèêàòîì
+    // ÑÐ»Ð¾Ð²Ð° Ð¸Ð· Ñ€Ð°Ð·Ð½Ñ‹Ñ… Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð², Ð½Ðµ ÑÐ²Ð»ÑÐµÑ‚ÑÑ Ð´ÑƒÐ±Ð»Ð¸ÐºÐ°Ñ‚Ð¾Ð¼
     AddDocument(search_server, 9, "nasty rat with curly hair"s, DocumentStatus::ACTUAL, { 1, 2 });
 
     cout << "Before duplicates removed: "s << search_server.GetDocumentCount() << endl;

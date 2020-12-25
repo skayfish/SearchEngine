@@ -26,18 +26,18 @@ int main() {
     }
 
     cout << "ACTUAL by default:"s << endl;
-    // ïîñëåäîâàòåëüíàÿ âåğñèÿ
+    // Ğ¿Ğ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ²ĞµÑ€ÑĞ¸Ñ
     for (const Document& document : search_server.FindTopDocuments("curly nasty cat"s)) {
         PrintDocument(document);
     }
     cout << "BANNED:"s << endl;
-    // ïîñëåäîâàòåëüíàÿ âåğñèÿ
+    // Ğ¿Ğ¾ÑĞ»ĞµĞ´Ğ¾Ğ²Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ²ĞµÑ€ÑĞ¸Ñ
     for (const Document& document : search_server.FindTopDocuments(execution::seq, "curly nasty cat"s, DocumentStatus::BANNED)) {
         PrintDocument(document);
     }
 
     cout << "Even ids:"s << endl;
-    // ïàğàëëåëüíàÿ âåğñèÿ
+    // Ğ¿Ğ°Ñ€Ğ°Ğ»Ğ»ĞµĞ»ÑŒĞ½Ğ°Ñ Ğ²ĞµÑ€ÑĞ¸Ñ
     for (const Document& document : search_server.FindTopDocuments(execution::par, "curly nasty cat"s, [](int document_id, DocumentStatus status, int rating) { return document_id % 2 == 0; })) {
         PrintDocument(document);
     }

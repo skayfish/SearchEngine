@@ -468,25 +468,25 @@ void AddDocument(SearchServer& search_server, int document_id, const string& doc
         search_server.AddDocument(document_id, document, status, ratings);
     }
     catch (const exception& e) {
-        cout << "Îøèáêà äîáàâëåíèÿ äîêóìåíòà "s << document_id << ": "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð° "s << document_id << ": "s << e.what() << endl;
     }
 }
 
 void FindTopDocuments(const SearchServer& search_server, const string& raw_query) {
-    cout << "Ðåçóëüòàòû ïîèñêà ïî çàïðîñó: "s << raw_query << endl;
+    cout << "Ð ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ñ‹ Ð¿Ð¾Ð¸ÑÐºÐ° Ð¿Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ: "s << raw_query << endl;
     try {
         for (const Document& document : search_server.FindTopDocuments(raw_query)) {
             PrintDocument(document);
         }
     }
     catch (const exception& e) {
-        cout << "Îøèáêà ïîèñêà: "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð¸ÑÐºÐ°: "s << e.what() << endl;
     }
 }
 
 void MatchDocuments(const SearchServer& search_server, const string& query) {
     try {
-        cout << "Ìàò÷èíã äîêóìåíòîâ ïî çàïðîñó: "s << query << endl;
+        cout << "ÐœÐ°Ñ‚Ñ‡Ð¸Ð½Ð³ Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð¿Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÑƒ: "s << query << endl;
         const int document_count = search_server.GetDocumentCount();
         for (int index = 0; index < document_count; ++index) {
             const int document_id = search_server.GetDocumentId(index);
@@ -495,7 +495,7 @@ void MatchDocuments(const SearchServer& search_server, const string& query) {
         }
     }
     catch (const exception& e) {
-        cout << "Îøèáêà ìàò÷èíãà äîêóìåíòîâ íà çàïðîñ "s << query << ": "s << e.what() << endl;
+        cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¼Ð°Ñ‚Ñ‡Ð¸Ð½Ð³Ð° Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð½Ð° Ð·Ð°Ð¿Ñ€Ð¾Ñ "s << query << ": "s << e.what() << endl;
     }
 }
 

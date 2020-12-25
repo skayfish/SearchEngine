@@ -23,6 +23,11 @@ public:
 
     }
 
+    LogDuration(std::string_view name_operation)
+        : name_operation_(name_operation) {
+
+    }
+
     LogDuration(std::string name_operation, std::ostream& os) 
         : name_operation_(name_operation)
         , os_(os) {

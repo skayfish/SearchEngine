@@ -15,12 +15,12 @@ int main() {
     SearchServer search_server("and with"s);
     int id = 0;
     for (
-        const string & text : {
+        const string& text : {
         "white cat and yellow hat"s,
             "curly cat curly tail"s,
             "nasty dog with big eyes"s,
             "nasty pigeon john"s,
-    }
+        }
     ) {
         search_server.AddDocument(++id, text, DocumentStatus::ACTUAL, { 1, 2 });
     }

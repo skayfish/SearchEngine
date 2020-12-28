@@ -5,7 +5,7 @@
 using namespace std;
 
 void RemoveDuplicates(SearchServer& search_server){
-	vector<int>duplicates_ids;
+	vector<int> duplicates_ids;
 	set<vector<string>> documents_words;
 	for (const auto id : search_server) {
 		const auto word_freq = search_server.GetWordToFrequencies(id);

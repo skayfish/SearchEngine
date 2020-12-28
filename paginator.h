@@ -8,7 +8,7 @@
 
 using namespace std::string_literals;
 
-template <typename Iterator>
+template<typename Iterator>
 class IteratorRange 
 {
 public:
@@ -16,7 +16,6 @@ public:
         : begin_(range_begin)
         , end_(range_end)
         , size_(range_size) {
-
     }
     Iterator begin() const {
         return begin_;
@@ -32,7 +31,7 @@ private:
     size_t size_;
 };
 
-template <typename Iterator>
+template<typename Iterator>
 class Paginator {
 public:
     Paginator(Iterator range_begin, Iterator range_end, size_t page_size) {
@@ -58,7 +57,7 @@ private:
     std::vector<IteratorRange<Iterator>> pages_;
 };
 
-template <typename Container>
+template<typename Container>
 auto Paginate(const Container& c, size_t page_size) {
     return Paginator(begin(c), end(c), page_size);
 }

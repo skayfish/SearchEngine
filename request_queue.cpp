@@ -10,16 +10,14 @@ RequestQueue::RequestQueue(const SearchServer& search_server)
 
 vector<Document> RequestQueue::AddFindRequest(const string& raw_query, DocumentStatus status) {
     vector<Document> request = search_server_.FindTopDocuments(raw_query, status);
-    QueryResult query_res = { request };
-    AddRequest(query_res);
+    AddRequest(QueryResult{request});
 
     return request;
 }
 
 vector<Document> RequestQueue::AddFindRequest(const string& raw_query) {
     vector<Document> request = search_server_.FindTopDocuments(raw_query);
-    QueryResult query_res = { request };
-    AddRequest(query_res);
+    AddRequest(QueryResult{request});
 
     return request;
 }

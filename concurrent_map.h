@@ -8,7 +8,7 @@
 
 using namespace std::string_literals;
 
-template <typename Key, typename Value>
+template<typename Key, typename Value>
 class ConcurrentMap {
 public:
     static_assert(std::is_integral_v<Key>, "ConcurrentMap supports only integer keys"s);
@@ -53,6 +53,6 @@ public:
     }
 
 private:
-    std::vector <std::map<Key, Value>> storage_maps_;
-    std::vector <std::mutex> storage_mutexes_;
+    std::vector<std::map<Key, Value>> storage_maps_;
+    std::vector<std::mutex> storage_mutexes_;
 };

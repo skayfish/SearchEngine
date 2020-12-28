@@ -20,7 +20,7 @@ class SearchServer {
 public:
     SearchServer() = default;
 
-    template <typename StringContainer>
+    template<typename StringContainer>
     explicit SearchServer(const StringContainer& stop_words)
         : stop_words_(MakeUniqueNonEmptyStrings(stop_words)) {
         using namespace std::string_literals;
@@ -70,9 +70,8 @@ public:
         );
     }
 
-    template<typename Policy,typename Filter>
-    std::vector<Document> FindTopDocuments(const Policy& policy, const std::string_view& raw_query, Filter filter) const 
-    {
+    template<typename Policy, typename Filter>
+    std::vector<Document> FindTopDocuments(const Policy& policy, const std::string_view& raw_query, Filter filter) const {
         const Query query = ParseQuery(policy, raw_query);
         auto matched_documents = FindAllDocuments(policy, query, filter);
 
@@ -80,8 +79,7 @@ public:
             [](const Document& lhs, const Document& rhs) {
                 if (std::abs(lhs.relevance - rhs.relevance) < 1e-6) {
                     return lhs.rating > rhs.rating;
-                }
-                else {
+                } else {
                     return lhs.relevance > rhs.relevance;
                 }
             }
@@ -145,7 +143,7 @@ private:
     struct DocumentData {
         int rating;
         DocumentStatus status;
-        std::map<std::string_view, double>word_freqs;
+        std::map<std::string_view, double> word_freqs;
     };
     std::set<std::string, std::less<>> words_;
     std::set<std::string, std::less<>> stop_words_;
@@ -235,8 +233,7 @@ private:
             if (!query_word.is_stop) {
                 if (query_word.is_minus) {
                     result.minus_words.insert(static_cast<std::string>(query_word.data));
-                }
-                else {
+                } else {
                     result.plus_words.insert(static_cast<std::string>(query_word.data));
                 }
             }
@@ -291,7 +288,7 @@ private:
 
     template<typename Filter>
     std::vector<Document> FindAllDocuments(const std::execution::parallel_policy& policy, const Query& query, Filter filter) const {
-        ConcurrentMap<int, double>concurrent_map_document_to_relevance(8);
+        ConcurrentMap<int, double> concurrent_map_document_to_relevance(8);
         for (const std::string_view& word : query.plus_words) {
             if (CountDocumentsContainWord(word) == 0) {
                 continue;

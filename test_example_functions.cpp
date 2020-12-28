@@ -14,8 +14,7 @@ ostream& operator<<(ostream& os, const vector<T>& arr) {
         if (isFirst) {
             os << elem;
             isFirst = false;
-        }
-        else {
+        } else {
             os << ", "s << elem;
         }
     }
@@ -31,8 +30,7 @@ ostream& operator<<(ostream& os, const set<T>& arr) {
         if (isFirst) {
             os << elem;
             isFirst = false;
-        }
-        else {
+        } else {
             os << ", "s << elem;
         }
     }
@@ -49,8 +47,7 @@ ostream& operator<<(ostream& os, const map<K, V>& arr) {
         if (isFirst) {
             os << key << ": "s << value;
             isFirst = false;
-        }
-        else {
+        } else {
             os << ", "s << key << ": "s << value;
         }
     }
@@ -59,7 +56,7 @@ ostream& operator<<(ostream& os, const map<K, V>& arr) {
     return os;
 }
 
-template <typename T, typename U>
+template<typename T, typename U>
 void AssertEqualImpl(const T& t, const U& u, const string& t_str, const string& u_str, const string& file,
     const string& func, unsigned line, const string& hint) {
     if (t != u) {
@@ -88,7 +85,7 @@ void AssertImpl(bool value, const string& expr_str, const string& file, const st
     }
 }
 
-template <typename F>
+template<typename F>
 void RunTestImpl(F func, const string& func_str) {
     func();
     cerr << func_str << " OK" << endl;
@@ -118,7 +115,6 @@ void TestFindAddedDocument() {
     constexpr int doc_id = 1;
     const string content = "cat in the city"s;
     const vector<int> ratings = { 1, 2, 3 };
-
 
     {
         SearchServer server;
@@ -345,18 +341,21 @@ void TestDocumentRelevanceCalculation() {
         ASSERT_EQUAL(docs[0].id, 0);
         ASSERT(NearlyEquals(docs[0].relevance, (log(server.GetDocumentCount() * 1.0 / 1) * 1.0)));
     }
+
     {
         const auto docs = server.FindTopDocuments("four"s);
         ASSERT_EQUAL(docs.size(), 1u);
         ASSERT_EQUAL(docs[0].id, 2);
         ASSERT(NearlyEquals(docs[0].relevance, (log(server.GetDocumentCount() * 1.0 / 1) * (1.0 / 3))));
     }
+
     {
         const auto docs = server.FindTopDocuments("four five"s);
         ASSERT_EQUAL(docs.size(), 1u);
         ASSERT_EQUAL(docs[0].id, 2);
         ASSERT(NearlyEquals(docs[0].relevance, (log(server.GetDocumentCount() * 1.0 / 1) * (2.0 / 3))));
     }
+
     {
         const auto docs = server.FindTopDocuments("one three"s);
         ASSERT_EQUAL(docs.size(), 3u);
@@ -385,9 +384,7 @@ void TestMatchingDocuments() {
 
     {
         SearchServer server;
-
         server.AddDocument(0, "black cat is in the city"s, DocumentStatus::ACTUAL, { 1 });
-
         {
             const auto [words, status] = server.MatchDocument("black cat"s, 0);
             ASSERT_EQUAL(count(words.begin(), words.end(), "cat"s), 1);
@@ -466,8 +463,7 @@ void PrintMatchDocumentResult(int document_id, const vector<string_view>& words,
 void AddDocument(SearchServer& search_server, int document_id, const string& document, DocumentStatus status, const vector<int>& ratings) {
     try {
         search_server.AddDocument(document_id, document, status, ratings);
-    }
-    catch (const exception& e) {
+    } catch (const exception& e) {
         cout << "Ошибка добавления документа "s << document_id << ": "s << e.what() << endl;
     }
 }
@@ -478,8 +474,7 @@ void FindTopDocuments(const SearchServer& search_server, const string& raw_query
         for (const Document& document : search_server.FindTopDocuments(raw_query)) {
             PrintDocument(document);
         }
-    }
-    catch (const exception& e) {
+    } catch (const exception& e) {
         cout << "Ошибка поиска: "s << e.what() << endl;
     }
 }
@@ -493,8 +488,7 @@ void MatchDocuments(const SearchServer& search_server, const string& query) {
             const auto [words, status] = search_server.MatchDocument(query, document_id);
             PrintMatchDocumentResult(document_id, words, status);
         }
-    }
-    catch (const exception& e) {
+    } catch (const exception& e) {
         cout << "Ошибка матчинга документов на запрос "s << query << ": "s << e.what() << endl;
     }
 }
@@ -541,7 +535,7 @@ vector<string> GenerateQueries(std::mt19937& generator, const vector<string>& di
     return queries;
 }
 
-template <typename QueriesProcessor>
+template<typename QueriesProcessor>
 void TestParallelQueries(string_view mark, QueriesProcessor processor, const SearchServer& search_server, const vector<string>& queries) {
     LOG_DURATION(mark);
     const auto documents_lists = processor(search_server, queries);

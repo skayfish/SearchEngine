@@ -9,11 +9,10 @@ class RequestQueue {
 public:
     explicit RequestQueue(const SearchServer& search_server);
 
-    template <typename DocumentPredicate>
+    template<typename DocumentPredicate>
     std::vector<Document> AddFindRequest(const std::string& raw_query, DocumentPredicate document_predicate) {
         std::vector<Document> request = search_server_.FindTopDocuments(raw_query, document_predicate);
-        QueryResult query_res = { request };
-        AddRequest(query_res);
+        AddRequest(QueryResult{request});
         return request;
     }
 

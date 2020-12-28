@@ -7,9 +7,10 @@
 using namespace std;
 
 vector<vector<Document>> ProcessQueries(const SearchServer& search_server, const vector<string>& queries) {
-	vector<vector<Document>>result(queries.size());
+	vector<vector<Document>> result(queries.size());
 
-	transform(execution::par,
+	transform(
+		execution::par,
 		queries.begin(),
 		queries.end(),
 		result.begin(),
@@ -21,13 +22,14 @@ vector<vector<Document>> ProcessQueries(const SearchServer& search_server, const
 	return result;
 }
 
-vector<Document>ProcessQueriesJoined(const SearchServer& search_server, const vector<string>& queries) {
+vector<Document> ProcessQueriesJoined(const SearchServer& search_server, const vector<string>& queries) {
+	vector<Document> result;
+
 	auto tmp = ProcessQueries(search_server, queries);
 	size_t sz = 0;
 	for (const auto& elem : tmp) {
 		sz += elem.size();
 	}
-	vector<Document>result;
 	result.reserve(sz);
 	for (auto& vec_doc : tmp) {
 		for (auto& doc : vec_doc) {

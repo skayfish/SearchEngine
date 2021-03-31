@@ -1,4 +1,5 @@
 #include "remove_duplicates.h"
+
 #include <vector>
 #include <iostream>
 
@@ -17,8 +18,7 @@ void RemoveDuplicates(SearchServer& search_server){
 		}
 		if (documents_words.count(words)) {
 			duplicates_ids.push_back(id);
-		}
-		else {
+		} else {
 			documents_words.insert(words);
 		}
 	}

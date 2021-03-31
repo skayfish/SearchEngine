@@ -12,35 +12,34 @@
 
 class LogDuration {
 public:
-    using Clock = std::chrono::steady_clock;
+	using Clock = std::chrono::steady_clock;
 
-    LogDuration() {
-    }
+	LogDuration() {}
 
-    LogDuration(std::string name_operation)
-        : name_operation_(name_operation) {
-    }
+	LogDuration(std::string name_operation)
+		: name_operation_(name_operation) 
+	{}
 
-    LogDuration(std::string_view name_operation)
-        : name_operation_(name_operation) {
-    }
+	LogDuration(std::string_view name_operation)
+		: name_operation_(name_operation) 
+	{}
 
-    LogDuration(std::string name_operation, std::ostream& os) 
-        : name_operation_(name_operation)
-        , os_(os) {
-    }
+	LogDuration(std::string name_operation, std::ostream& os)
+		: name_operation_(name_operation)
+		, os_(os) 
+	{}
 
-    ~LogDuration() {
-        using namespace std::chrono;
-        using namespace std::literals;
+	~LogDuration() {
+		using namespace std::chrono;
+		using namespace std::literals;
 
-        const auto end_time = Clock::now();
-        const auto dur = end_time - start_time_;
-        os_ << name_operation_ << ": "s << duration_cast<milliseconds>(dur).count() << " ms"s << std::endl;
-    }
+		const auto end_time = Clock::now();
+		const auto dur = end_time - start_time_;
+		os_ << name_operation_ << ": "s << duration_cast<milliseconds>(dur).count() << " ms"s << std::endl;
+	}
 
 private:
-    const Clock::time_point start_time_ = Clock::now();
-    std::string name_operation_ = std::string("name_operation");
-    std::ostream& os_ = std::cerr;
+	const Clock::time_point start_time_ = Clock::now();
+	std::string name_operation_ = std::string("name_operation");
+	std::ostream& os_ = std::cerr;
 };
